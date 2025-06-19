@@ -1,10 +1,9 @@
-
 import { useState, useCallback } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Upload, Download, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import DonationButton from './DonationButton';
+import PaystackButton from './PaystackButton';
 
 interface OptimizedImage {
   original: File;
@@ -215,7 +214,7 @@ const ImageOptimizer = () => {
         </div>
       )}
 
-      <DonationButton />
+      <PaystackButton />
     </div>
   );
 };

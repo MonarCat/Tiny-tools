@@ -1,10 +1,9 @@
-
 import { useState, useCallback } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Upload, Download, FileText, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import DonationButton from './DonationButton';
+import PaystackButton from './PaystackButton';
 
 interface MinifiedDocument {
   original: File;
@@ -268,7 +267,7 @@ const DocumentMinifier = () => {
         </div>
       )}
 
-      <DonationButton />
+      <PaystackButton />
     </div>
   );
 };
