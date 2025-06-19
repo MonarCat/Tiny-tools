@@ -4,7 +4,6 @@ import URLShortener from '@/components/URLShortener';
 import ImageOptimizer from '@/components/ImageOptimizer';
 import DocumentMinifier from '@/components/DocumentMinifier';
 import TinyToolsLogo from '@/components/TinyToolsLogo';
-import PWAInstallButton from '@/components/PWAInstallButton';
 import { Link, Image, FileText, Shield, Globe, Mail } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 
@@ -27,14 +26,6 @@ const Index = () => {
           <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8 leading-relaxed">
             The ultimate free toolkit for digital optimization. Shorten URLs, compress images, and minify documents - all in one powerful platform that's completely free and lightning fast.
           </p>
-          
-          {/* PWA Install Button - More Prominent */}
-          <div className="flex justify-center mb-8">
-            <div className="bg-white/90 backdrop-blur-sm rounded-lg p-4 shadow-lg border border-green-200">
-              <p className="text-sm text-gray-600 mb-3 font-medium">📱 Get the mobile app for faster access</p>
-              <PWAInstallButton />
-            </div>
-          </div>
           
           {/* Feature highlights */}
           <div className="flex flex-wrap justify-center gap-6 mb-8">
