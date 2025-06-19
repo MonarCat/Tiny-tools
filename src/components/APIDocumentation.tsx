@@ -1,142 +1,117 @@
 
 import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Code, Copy, ExternalLink } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import { useState } from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Code, Link, Image, FileText } from 'lucide-react';
 
 const APIDocumentation = () => {
-  const [copied, setCopied] = useState('');
-  const { toast } = useToast();
-
-  const copyCode = async (code: string, type: string) => {
-    try {
-      await navigator.clipboard.writeText(code);
-      setCopied(type);
-      setTimeout(() => setCopied(''), 2000);
-      toast({
-        title: "Copied!",
-        description: "Code copied to clipboard.",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to copy code.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const apiExample = `// JavaScript/Node.js Example
-const response = await fetch('https://tiniest.app/api/shorten', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({
-    url: 'https://your-very-long-url.com/path'
-  })
-});
-
-const data = await response.json();
-console.log(data.shortUrl); // https://tiniest.app/abc123`;
-
-  const curlExample = `curl -X POST https://tiniest.app/api/shorten \\
-  -H "Content-Type: application/json" \\
-  -d '{"url": "https://your-very-long-url.com/path"}'`;
-
-  const widgetExample = `<!-- Embed Tiniest Widget -->
-<iframe 
-  src="https://tiniest.app/widget" 
-  width="400" 
-  height="200" 
-  frameborder="0">
-</iframe>`;
-
   return (
-    <div className="mt-16 space-y-8">
-      <div className="text-center">
-        <h2 className="text-3xl font-bold text-gray-800 mb-4 flex items-center justify-center gap-2">
-          <Code className="h-8 w-8 text-green-600" />
-          Developer API
-        </h2>
-        <p className="text-gray-600 max-w-2xl mx-auto">
-          Integrate Tiniest into your applications with our simple REST API. Perfect for SaaS platforms, mobile apps, and automation tools.
-        </p>
-      </div>
+    <div className="mt-16">
+      <Card className="p-8 bg-white/60 backdrop-blur-sm border-0 shadow-lg">
+        <div className="text-center mb-8">
+          <div className="flex justify-center mb-4">
+            <Code className="h-12 w-12 text-indigo-500" />
+          </div>
+          <h2 className="text-3xl font-bold text-gray-800 mb-2">Developer API</h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Integrate Tiniest's powerful compression tools into your applications with our simple REST API.
+          </p>
+        </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <Card className="p-6">
-          <h3 className="text-xl font-semibold mb-4 text-green-700">JavaScript SDK</h3>
-          <div className="relative">
-            <pre className="bg-gray-900 text-green-400 p-4 rounded-lg text-sm overflow-x-auto">
-              <code>{apiExample}</code>
-            </pre>
-            <Button
-              size="sm"
-              variant="outline"
-              className="absolute top-2 right-2"
-              onClick={() => copyCode(apiExample, 'js')}
-            >
-              {copied === 'js' ? 'Copied!' : <Copy className="h-4 w-4" />}
-            </Button>
-          </div>
-        </Card>
+        <Tabs defaultValue="url" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="url" className="flex items-center gap-2">
+              <Link className="h-4 w-4" />
+              URL API
+            </TabsTrigger>
+            <TabsTrigger value="image" className="flex items-center gap-2">
+              <Image className="h-4 w-4" />
+              Image API
+            </TabsTrigger>
+            <TabsTrigger value="document" className="flex items-center gap-2">
+              <FileText className="h-4 w-4" />
+              Document API
+            </TabsTrigger>
+          </TabsList>
 
-        <Card className="p-6">
-          <h3 className="text-xl font-semibold mb-4 text-green-700">cURL Example</h3>
-          <div className="relative">
-            <pre className="bg-gray-900 text-green-400 p-4 rounded-lg text-sm overflow-x-auto">
-              <code>{curlExample}</code>
-            </pre>
-            <Button
-              size="sm"
-              variant="outline"
-              className="absolute top-2 right-2"
-              onClick={() => copyCode(curlExample, 'curl')}
-            >
-              {copied === 'curl' ? 'Copied!' : <Copy className="h-4 w-4" />}
-            </Button>
-          </div>
-        </Card>
+          <TabsContent value="url" className="mt-6">
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-xl font-semibold text-gray-800 mb-3">Shorten URL</h3>
+                <div className="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
+                  <div className="text-blue-400">POST</div>
+                  <div>https://tiniest.app/api/shorten</div>
+                  <br />
+                  <div className="text-yellow-400">// Request body</div>
+                  <div>{`{`}</div>
+                  <div>&nbsp;&nbsp;"url": "https://example.com/very-long-url"</div>
+                  <div>{`}`}</div>
+                  <br />
+                  <div className="text-yellow-400">// Response</div>
+                  <div>{`{`}</div>
+                  <div>&nbsp;&nbsp;"short_url": "https://tiniest.app/abc123",</div>
+                  <div>&nbsp;&nbsp;"original_url": "https://example.com/very-long-url",</div>
+                  <div>&nbsp;&nbsp;"created_at": "2024-01-01T12:00:00Z"</div>
+                  <div>{`}`}</div>
+                </div>
+              </div>
+            </div>
+          </TabsContent>
 
-        <Card className="p-6">
-          <h3 className="text-xl font-semibold mb-4 text-green-700">Widget Embed</h3>
-          <div className="relative">
-            <pre className="bg-gray-900 text-green-400 p-4 rounded-lg text-sm overflow-x-auto">
-              <code>{widgetExample}</code>
-            </pre>
-            <Button
-              size="sm"
-              variant="outline"
-              className="absolute top-2 right-2"
-              onClick={() => copyCode(widgetExample, 'widget')}
-            >
-              {copied === 'widget' ? 'Copied!' : <Copy className="h-4 w-4" />}
-            </Button>
-          </div>
-        </Card>
-      </div>
+          <TabsContent value="image" className="mt-6">
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-xl font-semibold text-gray-800 mb-3">Optimize Image</h3>
+                <div className="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
+                  <div className="text-blue-400">POST</div>
+                  <div>https://tiniest.app/api/optimize-image</div>
+                  <br />
+                  <div className="text-yellow-400">// Form data</div>
+                  <div>Content-Type: multipart/form-data</div>
+                  <div>image: [file]</div>
+                  <div>quality: 0.8 (optional, 0.1-1.0)</div>
+                  <div>max_width: 1920 (optional)</div>
+                  <div>max_height: 1080 (optional)</div>
+                  <br />
+                  <div className="text-yellow-400">// Response</div>
+                  <div>Content-Type: image/jpeg</div>
+                  <div>[optimized image binary data]</div>
+                </div>
+              </div>
+            </div>
+          </TabsContent>
 
-      <Card className="p-6 bg-green-50 border-green-200">
-        <h3 className="text-xl font-semibold mb-4 text-green-800">API Features</h3>
-        <div className="grid md:grid-cols-2 gap-4 text-green-700">
-          <div>
-            <h4 className="font-semibold mb-2">🚀 Fast & Reliable</h4>
-            <p className="text-sm">99.9% uptime with global CDN distribution</p>
-          </div>
-          <div>
-            <h4 className="font-semibold mb-2">📊 Analytics</h4>
-            <p className="text-sm">Track clicks, referrers, and geographic data</p>
-          </div>
-          <div>
-            <h4 className="font-semibold mb-2">🔒 Secure</h4>
-            <p className="text-sm">HTTPS everywhere with malware protection</p>
-          </div>
-          <div>
-            <h4 className="font-semibold mb-2">💰 Free Tier</h4>
-            <p className="text-sm">1000 URLs/month free, then pay-as-you-go</p>
-          </div>
+          <TabsContent value="document" className="mt-6">
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-xl font-semibold text-gray-800 mb-3">Minify Document</h3>
+                <div className="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
+                  <div className="text-blue-400">POST</div>
+                  <div>https://tiniest.app/api/minify-document</div>
+                  <br />
+                  <div className="text-yellow-400">// Form data</div>
+                  <div>Content-Type: multipart/form-data</div>
+                  <div>document: [file]</div>
+                  <div>type: "css" | "js" | "html" | "json" | "text"</div>
+                  <br />
+                  <div className="text-yellow-400">// Response</div>
+                  <div>{`{`}</div>
+                  <div>&nbsp;&nbsp;"minified_content": "...",</div>
+                  <div>&nbsp;&nbsp;"original_size": 1024,</div>
+                  <div>&nbsp;&nbsp;"minified_size": 512,</div>
+                  <div>&nbsp;&nbsp;"compression_ratio": 50.0</div>
+                  <div>{`}`}</div>
+                </div>
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
+
+        <div className="mt-8 p-4 bg-blue-50 rounded-lg">
+          <h4 className="font-semibold text-blue-800 mb-2">Getting Started</h4>
+          <p className="text-blue-700 text-sm">
+            All API endpoints are free to use with rate limiting. For higher limits and premium features, 
+            consider supporting us with a donation. No API key required for basic usage.
+          </p>
         </div>
       </Card>
     </div>
