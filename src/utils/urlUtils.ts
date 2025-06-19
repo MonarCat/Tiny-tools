@@ -30,6 +30,6 @@ export const getDomainFromUrl = (url: string): string => {
 };
 
 export const createShortUrl = (shortCode: string): string => {
-  // Use localhost for development - in production this would be your actual domain
+  // Use localhost for development - in production this would be tiniest.app
   return `http://localhost:5173/s/${shortCode}`;
 };

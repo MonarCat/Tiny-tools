@@ -2,6 +2,8 @@
 import { useState } from 'react';
 import URLInput from './URLInput';
 import ShortenedURL from './ShortenedURL';
+import APIDocumentation from './APIDocumentation';
+import DonationButton from './DonationButton';
 import { generateShortUrl, createShortUrl } from '@/utils/urlUtils';
 import { useToast } from '@/hooks/use-toast';
 
@@ -73,6 +75,9 @@ const URLShortener = () => {
           </div>
         </div>
       )}
+      
+      <APIDocumentation />
+      <DonationButton />
     </div>
   );
 };
