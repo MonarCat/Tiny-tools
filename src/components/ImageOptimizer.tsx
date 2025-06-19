@@ -3,7 +3,8 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Upload, Download, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import PaystackButton from './PaystackButton';
+import PayPalButton from './PayPalButton';
+import ShareButton from './ShareButton';
 
 interface OptimizedImage {
   original: File;
@@ -133,7 +134,7 @@ const ImageOptimizer = () => {
           </div>
           
           <div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">Image Optimizer</h2>
+            <h2 className="text-2xl font-bol text-gray-800 mb-2">Image Optimizer</h2>
             <p className="text-gray-600">
               Compress and optimize your images while maintaining quality. Supports JPEG, PNG, and WebP formats.
             </p>
@@ -200,13 +201,20 @@ const ImageOptimizer = () => {
                     </div>
                   </div>
                   
-                  <Button
-                    onClick={() => downloadOptimized(image)}
-                    className="flex items-center gap-2 bg-green-600 hover:bg-green-700"
-                  >
-                    <Download className="h-4 w-4" />
-                    Download
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => downloadOptimized(image)}
+                      className="flex items-center gap-2 bg-green-600 hover:bg-green-700"
+                    >
+                      <Download className="h-4 w-4" />
+                      Download
+                    </Button>
+                    <ShareButton 
+                      content={`Optimized ${image.original.name} - saved ${image.compressionRatio.toFixed(1)}% with Tiny-Tools!`} 
+                      type="image"
+                      filename={image.original.name}
+                    />
+                  </div>
                 </div>
               </Card>
             ))}
@@ -214,7 +222,7 @@ const ImageOptimizer = () => {
         </div>
       )}
 
-      <PaystackButton />
+      <PayPalButton />
     </div>
   );
 };

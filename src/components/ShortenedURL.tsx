@@ -4,6 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Copy, ExternalLink, BarChart3, Check } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import ShareButton from './ShareButton';
 
 interface ShortenedURLProps {
   original: string;
@@ -102,6 +103,8 @@ const ShortenedURL = ({ original, shortened, clicks, createdAt }: ShortenedURLPr
             <ExternalLink className="h-4 w-4" />
             Visit
           </Button>
+
+          <ShareButton content={shortened} type="url" />
         </div>
       </div>
     </Card>

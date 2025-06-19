@@ -22,7 +22,7 @@ const Index = () => {
           </div>
           
           <h1 className="text-6xl font-bold bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent mb-4">
-            Tiniest
+            Tiny-Tools
           </h1>
           <p className="text-2xl text-gray-700 font-medium mb-4">
             Make Everything Smaller, Faster, Better
@@ -89,10 +89,10 @@ const Index = () => {
           </Tabs>
         </div>
 
-        {/* Why Choose Tiniest Section */}
+        {/* Why Choose Tiny-Tools Section */}
         <div className="mt-20 mb-16">
           <h2 className="text-4xl font-bold text-center text-gray-800 mb-12">
-            Why Choose Tiniest?
+            Why Choose Tiny-Tools?
           </h2>
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             <Card className="p-8 bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">

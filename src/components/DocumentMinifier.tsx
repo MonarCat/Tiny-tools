@@ -1,13 +1,15 @@
+
 import { useState, useCallback } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Upload, Download, FileText, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import PaystackButton from './PaystackButton';
+import PayPalButton from './PayPalButton';
+import ShareButton from './ShareButton';
 
 interface MinifiedDocument {
   original: File;
-  minified: Blob;
+  minified: string;
   originalSize: number;
   minifiedSize: number;
   compressionRatio: number;
@@ -18,45 +20,40 @@ const DocumentMinifier = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const { toast } = useToast();
 
-  const minifyText = (text: string): string => {
-    return text
-      // Remove multiple spaces and replace with single space
-      .replace(/\s+/g, ' ')
-      // Remove spaces around punctuation
-      .replace(/\s*([.,;:!?])\s*/g, '$1 ')
-      // Remove trailing spaces
-      .replace(/\s+$/gm, '')
-      // Remove leading spaces
-      .replace(/^\s+/gm, '')
-      // Remove empty lines
-      .replace(/\n\s*\n/g, '\n')
-      .trim();
-  };
-
   const minifyCSS = (css: string): string => {
     return css
-      // Remove comments
-      .replace(/\/\*[\s\S]*?\*\//g, '')
-      // Remove spaces around special characters
-      .replace(/\s*([{}:;,>+~])\s*/g, '$1')
-      // Remove trailing semicolons before }
-      .replace(/;}/g, '}')
-      // Remove unnecessary spaces
-      .replace(/\s+/g, ' ')
+      .replace(/\/\*[\s\S]*?\*\//g, '') // Remove comments
+      .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+      .replace(/;\s*}/g, '}') // Remove semicolon before closing brace
+      .replace(/\s*{\s*/g, '{') // Remove spaces around opening brace
+      .replace(/;\s*/g, ';') // Remove spaces after semicolons
+      .replace(/,\s*/g, ',') // Remove spaces after commas
       .trim();
   };
 
   const minifyJS = (js: string): string => {
     return js
-      // Remove single-line comments (basic)
-      .replace(/\/\/.*$/gm, '')
-      // Remove multi-line comments
-      .replace(/\/\*[\s\S]*?\*\//g, '')
-      // Remove extra whitespace
-      .replace(/\s+/g, ' ')
-      // Remove spaces around operators and punctuation
-      .replace(/\s*([=+\-*/<>!&|{}();,])\s*/g, '$1')
+      .replace(/\/\*[\s\S]*?\*\//g, '') // Remove block comments
+      .replace(/\/\/.*$/gm, '') // Remove line comments
+      .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+      .replace(/\s*([{}();,:])\s*/g, '$1') // Remove spaces around operators
       .trim();
+  };
+
+  const minifyHTML = (html: string): string => {
+    return html
+      .replace(/<!--[\s\S]*?-->/g, '') // Remove comments
+      .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+      .replace(/>\s+</g, '><') // Remove spaces between tags
+      .trim();
+  };
+
+  const minifyJSON = (json: string): string => {
+    try {
+      return JSON.stringify(JSON.parse(json));
+    } catch {
+      return json.replace(/\s+/g, ' ').trim();
+    }
   };
 
   const minifyDocument = useCallback(async (file: File): Promise<MinifiedDocument> => {
@@ -65,51 +62,44 @@ const DocumentMinifier = () => {
       
       reader.onload = (e) => {
         const content = e.target?.result as string;
-        let minifiedContent: string;
-
-        // Determine file type and apply appropriate minification
+        let minified = '';
+        
         const extension = file.name.split('.').pop()?.toLowerCase();
         
         switch (extension) {
           case 'css':
-            minifiedContent = minifyCSS(content);
+            minified = minifyCSS(content);
             break;
           case 'js':
-          case 'javascript':
-            minifiedContent = minifyJS(content);
-            break;
-          case 'json':
-            try {
-              // Parse and stringify JSON to remove formatting
-              minifiedContent = JSON.stringify(JSON.parse(content));
-            } catch {
-              minifiedContent = minifyText(content);
-            }
+          case 'jsx':
+          case 'ts':
+          case 'tsx':
+            minified = minifyJS(content);
             break;
           case 'html':
           case 'htm':
-            minifiedContent = content
-              .replace(/\s+/g, ' ')
-              .replace(/>\s+</g, '><')
-              .replace(/<!--[\s\S]*?-->/g, '')
-              .trim();
+            minified = minifyHTML(content);
+            break;
+          case 'json':
+            minified = minifyJSON(content);
             break;
           default:
-            minifiedContent = minifyText(content);
+            minified = content.replace(/\s+/g, ' ').trim();
         }
-
-        const blob = new Blob([minifiedContent], { type: file.type });
-        const compressionRatio = ((file.size - blob.size) / file.size) * 100;
-
+        
+        const originalSize = new Blob([content]).size;
+        const minifiedSize = new Blob([minified]).size;
+        const compressionRatio = ((originalSize - minifiedSize) / originalSize) * 100;
+        
         resolve({
           original: file,
-          minified: blob,
-          originalSize: file.size,
-          minifiedSize: blob.size,
+          minified,
+          originalSize,
+          minifiedSize,
           compressionRatio: Math.max(0, compressionRatio)
         });
       };
-
+      
       reader.onerror = () => reject(new Error('Failed to read file'));
       reader.readAsText(file);
     });
@@ -119,15 +109,15 @@ const DocumentMinifier = () => {
     if (!files || files.length === 0) return;
 
     setIsProcessing(true);
-    const validFiles = Array.from(files).filter(file => {
+    const validDocuments = Array.from(files).filter(file => {
       const extension = file.name.split('.').pop()?.toLowerCase();
-      return ['txt', 'css', 'js', 'json', 'html', 'htm', 'xml', 'csv'].includes(extension || '');
+      return ['css', 'js', 'jsx', 'ts', 'tsx', 'html', 'htm', 'json', 'xml', 'svg'].includes(extension || '');
     });
 
-    if (validFiles.length === 0) {
+    if (validDocuments.length === 0) {
       toast({
         title: "Invalid files",
-        description: "Please select valid text-based files (TXT, CSS, JS, JSON, HTML, XML, CSV).",
+        description: "Please select valid document files (CSS, JS, HTML, JSON, etc.).",
         variant: "destructive",
       });
       setIsProcessing(false);
@@ -135,15 +125,15 @@ const DocumentMinifier = () => {
     }
 
     try {
-      const minifiedDocs = await Promise.all(
-        validFiles.map(file => minifyDocument(file))
+      const minifiedDocuments = await Promise.all(
+        validDocuments.map(file => minifyDocument(file))
       );
 
-      setDocuments(prev => [...minifiedDocs, ...prev.slice(0, 5)]);
+      setDocuments(prev => [...minifiedDocuments, ...prev.slice(0, 5)]);
       
       toast({
         title: "Documents minified!",
-        description: `Successfully minified ${minifiedDocs.length} document(s).`,
+        description: `Successfully minified ${minifiedDocuments.length} document(s).`,
       });
     } catch (error) {
       toast({
@@ -156,16 +146,17 @@ const DocumentMinifier = () => {
     }
   };
 
-  const downloadMinified = (doc: MinifiedDocument) => {
-    const url = URL.createObjectURL(doc.minified);
-    const a = document.createElement('a');
+  const downloadMinified = (document: MinifiedDocument) => {
+    const blob = new Blob([document.minified], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = window.document.createElement('a');
     a.href = url;
-    const nameWithoutExt = doc.original.name.replace(/\.[^/.]+$/, '');
-    const extension = doc.original.name.split('.').pop();
+    const nameWithoutExt = document.original.name.replace(/\.[^/.]+$/, '');
+    const extension = document.original.name.split('.').pop();
     a.download = `${nameWithoutExt}.min.${extension}`;
-    document.body.appendChild(a);
+    window.document.body.appendChild(a);
     a.click();
-    document.body.removeChild(a);
+    window.document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
 
@@ -188,7 +179,7 @@ const DocumentMinifier = () => {
           <div>
             <h2 className="text-2xl font-bold text-gray-800 mb-2">Document Minifier</h2>
             <p className="text-gray-600">
-              Compress text-based files by removing unnecessary whitespace and comments. Perfect for CSS, JS, JSON, HTML, and more.
+              Minify and compress your code files. Supports CSS, JavaScript, HTML, JSON, and more.
             </p>
           </div>
 
@@ -196,7 +187,7 @@ const DocumentMinifier = () => {
             <input
               type="file"
               multiple
-              accept=".txt,.css,.js,.json,.html,.htm,.xml,.csv"
+              accept=".css,.js,.jsx,.ts,.tsx,.html,.htm,.json,.xml,.svg"
               onChange={(e) => handleFileUpload(e.target.files)}
               className="hidden"
               id="document-upload"
@@ -210,7 +201,7 @@ const DocumentMinifier = () => {
                     Drop documents here or click to upload
                   </p>
                   <p className="text-sm text-gray-500">
-                    Supports TXT, CSS, JS, JSON, HTML, XML, CSV • Multiple files allowed
+                    Supports CSS, JS, HTML, JSON, XML, SVG • Multiple files allowed
                   </p>
                 </div>
               </div>
@@ -232,34 +223,41 @@ const DocumentMinifier = () => {
             Minified Documents
           </h3>
           <div className="grid gap-4">
-            {documents.map((doc, index) => (
+            {documents.map((document, index) => (
               <Card key={index} className="p-6 bg-white/80 backdrop-blur-sm border border-gray-200">
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                   <div className="flex-1">
-                    <h4 className="font-medium text-gray-800 mb-2">{doc.original.name}</h4>
+                    <h4 className="font-medium text-gray-800 mb-2">{document.original.name}</h4>
                     <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
                       <div>
-                        <span className="font-medium">Original:</span> {formatFileSize(doc.originalSize)}
+                        <span className="font-medium">Original:</span> {formatFileSize(document.originalSize)}
                       </div>
                       <div>
-                        <span className="font-medium">Minified:</span> {formatFileSize(doc.minifiedSize)}
+                        <span className="font-medium">Minified:</span> {formatFileSize(document.minifiedSize)}
                       </div>
                       <div className="col-span-2">
                         <span className="font-medium">Saved:</span>{' '}
                         <span className="text-green-600 font-semibold">
-                          {doc.compressionRatio.toFixed(1)}% ({formatFileSize(doc.originalSize - doc.minifiedSize)})
+                          {document.compressionRatio.toFixed(1)}% ({formatFileSize(document.originalSize - document.minifiedSize)})
                         </span>
                       </div>
                     </div>
                   </div>
                   
-                  <Button
-                    onClick={() => downloadMinified(doc)}
-                    className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700"
-                  >
-                    <Download className="h-4 w-4" />
-                    Download
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => downloadMinified(document)}
+                      className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700"
+                    >
+                      <Download className="h-4 w-4" />
+                      Download
+                    </Button>
+                    <ShareButton 
+                      content={`Minified ${document.original.name} - saved ${document.compressionRatio.toFixed(1)}% with Tiny-Tools!`} 
+                      type="document"
+                      filename={document.original.name}
+                    />
+                  </div>
                 </div>
               </Card>
             ))}
@@ -267,7 +265,7 @@ const DocumentMinifier = () => {
         </div>
       )}
 
-      <PaystackButton />
+      <PayPalButton />
     </div>
   );
 };

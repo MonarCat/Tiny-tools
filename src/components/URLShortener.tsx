@@ -3,7 +3,7 @@ import { useState } from 'react';
 import URLInput from './URLInput';
 import ShortenedURL from './ShortenedURL';
 import APIDocumentation from './APIDocumentation';
-import PaystackButton from './PaystackButton';
+import PayPalButton from './PayPalButton';
 import { generateShortUrl, createShortUrl } from '@/utils/urlUtils';
 import { useToast } from '@/hooks/use-toast';
 
@@ -77,7 +77,7 @@ const URLShortener = () => {
       )}
       
       <APIDocumentation />
-      <PaystackButton />
+      <PayPalButton />
     </div>
   );
 };
