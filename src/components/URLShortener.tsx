@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import URLInput from './URLInput';
 import ShortenedURL from './ShortenedURL';
-import { generateShortUrl } from '@/utils/urlUtils';
+import { generateShortUrl, createShortUrl } from '@/utils/urlUtils';
 import { useToast } from '@/hooks/use-toast';
 
 interface ShortenedLink {
@@ -25,7 +25,7 @@ const URLShortener = () => {
     
     try {
       const shortCode = generateShortUrl();
-      const shortenedUrl = `https://lnk.shrink/${shortCode}`;
+      const shortenedUrl = createShortUrl(shortCode);
       
       const newLink: ShortenedLink = {
         original: url,

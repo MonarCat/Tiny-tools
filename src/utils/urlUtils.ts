@@ -28,3 +28,8 @@ export const getDomainFromUrl = (url: string): string => {
     return 'Invalid URL';
   }
 };
+
+export const createShortUrl = (shortCode: string): string => {
+  // Use localhost for development - in production this would be your actual domain
+  return `http://localhost:5173/s/${shortCode}`;
+};
