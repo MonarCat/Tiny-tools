@@ -13,24 +13,18 @@ const PayPalButton = () => {
         </p>
         
         <div className="flex justify-center">
-          <form action="https://www.paypal.com/donate" method="post" target="_top">
-            <input type="hidden" name="hosted_button_id" value="SZMD5T2ARX5AJ" />
-            <input 
-              type="image" 
-              src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" 
-              name="submit" 
-              title="PayPal - The safer, easier way to pay online!" 
-              alt="Donate with PayPal button" 
-              className="hover:opacity-80 transition-opacity duration-300 border-0"
-            />
+          <a 
+            href="https://www.paypal.com/donate/?hosted_button_id=SZMD5T2ARX5AJ" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-block hover:opacity-80 transition-opacity duration-300"
+          >
             <img 
-              alt="" 
-              src="https://www.paypal.com/en_US/i/scr/pixel.gif" 
-              width={1} 
-              height={1} 
+              src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" 
+              alt="Donate with PayPal button" 
               className="border-0"
             />
-          </form>
+          </a>
         </div>
         
         <p className="text-xs text-gray-500 mt-4">

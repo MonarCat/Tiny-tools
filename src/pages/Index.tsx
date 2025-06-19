@@ -1,9 +1,9 @@
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import URLShortener from '@/components/URLShortener';
 import ImageOptimizer from '@/components/ImageOptimizer';
 import DocumentMinifier from '@/components/DocumentMinifier';
-import { Link, Image, FileText, Zap, Shield, Globe } from 'lucide-react';
+import TinyToolsLogo from '@/components/TinyToolsLogo';
+import { Link, Image, FileText, Shield, Globe } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 
 const Index = () => {
@@ -13,12 +13,7 @@ const Index = () => {
         {/* Hero Section */}
         <div className="text-center mb-12">
           <div className="flex justify-center mb-6">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-green-400 to-teal-400 rounded-full blur-xl opacity-30 animate-pulse"></div>
-              <div className="relative bg-gradient-to-r from-green-500 to-teal-500 text-white p-4 rounded-full">
-                <Zap className="h-12 w-12" />
-              </div>
-            </div>
+            <TinyToolsLogo size="lg" />
           </div>
           
           <h1 className="text-6xl font-bold bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent mb-4">
@@ -38,7 +33,7 @@ const Index = () => {
               <span className="text-gray-700 font-medium">100% Free</span>
             </div>
             <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm">
-              <Zap className="h-5 w-5 text-blue-500" />
+              <TinyToolsLogo size="sm" />
               <span className="text-gray-700 font-medium">Lightning Fast</span>
             </div>
             <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm">
@@ -97,9 +92,7 @@ const Index = () => {
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             <Card className="p-8 bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
               <div className="text-center">
-                <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-white p-3 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                  <Zap className="h-8 w-8" />
-                </div>
+                <TinyToolsLogo size="md" className="mx-auto mb-4" />
                 <h3 className="text-xl font-bold text-gray-800 mb-3">Lightning Fast</h3>
                 <p className="text-gray-600">
                   Process your files in seconds with our optimized algorithms. No waiting, no delays.
