@@ -1,8 +1,10 @@
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import URLShortener from '@/components/URLShortener';
 import ImageOptimizer from '@/components/ImageOptimizer';
 import DocumentMinifier from '@/components/DocumentMinifier';
 import TinyToolsLogo from '@/components/TinyToolsLogo';
+import PWAInstallButton from '@/components/PWAInstallButton';
 import { Link, Image, FileText, Shield, Globe } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 
@@ -25,6 +27,11 @@ const Index = () => {
           <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8 leading-relaxed">
             The ultimate free toolkit for digital optimization. Shorten URLs, compress images, and minify documents - all in one powerful platform that's completely free and lightning fast.
           </p>
+          
+          {/* PWA Install Button */}
+          <div className="flex justify-center mb-8">
+            <PWAInstallButton />
+          </div>
           
           {/* Feature highlights */}
           <div className="flex flex-wrap justify-center gap-6 mb-8">
