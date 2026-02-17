@@ -144,16 +144,16 @@ const Index = () => {
             <div className="flex justify-center items-center gap-2 mb-6">
               <Mail className="h-5 w-5 text-green-400" />
               <a 
-                href="mailto:iammwombe@gmail.com" 
+                href="mailto:tiny.tools4you@gmail.com" 
                 className="text-green-400 hover:text-green-300 transition-colors font-medium"
               >
-                iammwombe@gmail.com
+                tiny.tools4you@gmail.com
               </a>
             </div>
             
             <div className="border-t border-gray-700 pt-6 mt-6">
               <p className="text-gray-400 text-sm">
-                © 2025 Tiny-Tools. All rights reserved.
+                © 2026 Tiny-Tools. All rights reserved.
               </p>
             </div>
           </div>
